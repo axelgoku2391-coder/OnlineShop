@@ -1,18 +1,17 @@
 <?php
-include __DIR__ . '/../config/db_connection.php';
+ require $_SERVER['DOCUMENT_ROOT'] . '/student002/shop/backend/config/db_connection.php'; 
 
-
-// Insertar un nuevo producto
-function insertarProducto($nombre, $precio, $cantidad, $categoria_id) {
+// Insertar un nuevo producto con imagen
+function insertarProducto($nombre, $precio, $cantidad, $categoria_id, $imagen) {
     global $connection;
 
-    $stmt = $connection->prepare(
-        "INSERT INTO products (product_name, product_price, stock, category_id) VALUES (?, ?, ?, ?)"
+    $query = $connection->prepare(
+        "INSERT INTO 002products (product_name, product_price, stock, category_id, product_image) VALUES (?, ?, ?, ?, ?)"
     );
 
-    $stmt->bind_param("sdii", $nombre, $precio, $cantidad, $categoria_id);
-    $resultado = $stmt->execute();
-    $stmt->close();
+    $query->bind_param("sdiis", $nombre, $precio, $cantidad, $categoria_id, $imagen);
+    $resultado = $query->execute();
+    $query->close();
 
     return $resultado;
 }

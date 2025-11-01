@@ -1,39 +1,25 @@
 <?php
-include  __DIR__ . '/../config/db_connection.php';
+ require $_SERVER['DOCUMENT_ROOT'] . '/student002/shop/backend/config/db_connection.php'; 
 
-// Obtener datos de un producto por ID
-function obtenerProducto($product_id) {
-    global $connection;
 
-    $stmt = $connection->prepare(
-        "SELECT product_name, product_price, stock, category_id 
-                FROM products 
-                WHERE product_id = ?"
-    );
-
-    $stmt->bind_param("i", $product_id);
-
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-
-    $producto = $result->fetch_assoc();
-    $stmt->close();
-
-    return $producto ?: null;
+// Obtener producto por ID
+function obtenerProducto($id)
+{
+    global $conn;
+    $query = $conn->prepare("SELECT product_name, product_price, stock, category_id, product_image FROM 002products WHERE product_id=?");
+    $query->bind_param("i", $id);
+    $query->execute();
+    $producto = $query->get_result()->fetch_assoc();
+    $query->close();
+    return $producto;
 }
 
-// Actualizar un producto existente
-function actualizarProducto($product_id, $nombre, $precio, $stock, $categorias) {
-    global $connection;
-
-    $stmt = $connection->prepare(
-        "UPDATE products SET product_name = ?, product_price = ?, stock = ?, category_id = ? WHERE product_id = ?"
-    );
-    $stmt->bind_param("sdssi", $nombre, $precio, $stock, $categorias, $product_id);
-    $resultado = $stmt->execute();
-    $stmt->close();
-
-    return $resultado;
+// Actualizar producto
+function actualizarProducto($id, $nombre, $precio, $stock, $categoria, $img)
+{
+    global $conn;
+    $query2 = $conn->prepare("UPDATE 002products SET product_name=?, product_price=?, stock=?, category_id=?, product_img=? WHERE product_id=?");
+    $ok = $query2->execute();
+    $query2->close();
+    return $ok;
 }
-?>

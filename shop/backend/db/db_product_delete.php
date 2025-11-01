@@ -3,20 +3,15 @@ include __DIR__ . '/../config/db_connection.php';
 
 // Eliminar un producto por ID
 function eliminarProducto($product_id) {
-    global $connection;
+    global $conn;
 
-    $stmt = $connection->prepare(
-        "DELETE FROM products WHERE product_id = ?"
-    );
+    $query = $conn->prepare("DELETE FROM 002products WHERE product_id = ?");
+    $query->bind_param("i", $product_id);
+    $query->execute();
 
-    $stmt->bind_param("i", $product_id);
+    $eliminado = $query->affected_rows > 0;
 
-    $stmt->execute();
-
-    $afectadas = $stmt->affected_rows;
-
-    $stmt->close();
-
-    return $afectadas > 0;
+    $query->close();
+    return $eliminado;
 }
 ?>
